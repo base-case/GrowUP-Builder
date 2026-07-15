@@ -4,7 +4,7 @@ import Icon from './Icon.jsx'
 
 const empty = { name: '', email: '', phone: '', interest: '', message: '' }
 
-export default function EnquiryForm({ compact = false }) {
+export default function EnquiryForm({ compact = false, dark = false }) {
   const [form, setForm] = useState(empty)
   const [errors, setErrors] = useState({})
   const [sent, setSent] = useState(false)
@@ -49,8 +49,9 @@ export default function EnquiryForm({ compact = false }) {
     )
   }
 
-  const field =
-    'w-full rounded-xl border border-ink-900/10 bg-cream-50 px-4 py-3.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-700/40 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-100'
+  const field = dark
+    ? 'w-full border-b border-cream-50/25 bg-transparent px-0 py-3.5 text-sm text-cream-50 outline-none transition placeholder:text-cream-50/45 focus:border-acid'
+    : 'w-full border-b border-ink-900/25 bg-transparent px-0 py-3.5 text-sm text-ink-900 outline-none transition placeholder:text-ink-700/45 focus:border-ink-900'
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
@@ -92,16 +93,16 @@ export default function EnquiryForm({ compact = false }) {
       <button
         type="submit"
         data-hover
-        className="group flex w-full items-center justify-center gap-2 rounded-full bg-brand-800 px-6 py-4 text-sm font-semibold text-cream-50 transition hover:bg-brand-700"
+        className={`group flex w-full items-center justify-center gap-2 px-6 py-4 text-sm font-semibold transition ${dark ? 'bg-acid text-ink-900 hover:bg-cream-50' : 'bg-brand-800 text-cream-50 hover:bg-ink-900'}`}
       >
         Submit Enquiry
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-clay-500 transition-transform group-hover:rotate-45">
+        <span className={`grid h-5 w-5 place-items-center rounded-full transition-transform group-hover:rotate-45 ${dark ? 'bg-ink-900 text-acid' : 'bg-acid text-ink-900'}`}>
           <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M7 17 17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </button>
-      <p className="text-center text-xs text-ink-700/50">
+      <p className={`text-center text-xs ${dark ? 'text-cream-50/45' : 'text-ink-700/50'}`}>
         Demo form — submissions are logged to the console, not stored.
       </p>
     </form>
