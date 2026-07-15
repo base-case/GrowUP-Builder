@@ -2,152 +2,20 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const links = [
-  { to: '/', label: 'Home' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-]
+const links = [{ to: '/', label: 'Home', number: '01' }, { to: '/projects', label: 'Projects', number: '02' }, { to: '/about', label: 'About Us', number: '03' }, { to: '/contact', label: 'Contact', number: '04' }]
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const { pathname } = useLocation()
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
-    onScroll()
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   useEffect(() => setOpen(false), [pathname])
-
-  return (
-    <>
-      <motion.header
-        initial={{ y: -40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-        className="fixed inset-x-0 top-0 z-50 px-3 pt-4 lg:px-6"
-      >
-        <nav className="mx-auto max-w-7xl">
-          {/* Liquid-glass dock */}
-          <div
-            className={`relative flex items-center justify-between gap-3 overflow-hidden rounded-full  px-3.5 py-3 shadow-[0_10px_50px_-10px_rgba(10,36,26,0.4)] backdrop-blur-3xl backdrop-saturate-200 transition-colors duration-500 ${
-              scrolled
-                ? 'bg-gradient-to-br from-white/45 to-white/25'
-                : 'bg-gradient-to-br from-white/30 to-white/10'
-            }`}
-          >
-            {/* Subtle glass edges — uniform frost, no white cap */}
-            <span className="pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
-            <span className="pointer-events-none absolute inset-x-12 bottom-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-            <span className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-white/25" />
-
-            {/* Logo */}
-            <Link to="/" className="relative flex items-center gap-2.5 pl-1" data-hover>
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-800 font-display text-lg text-cream-50">
-                G
-              </span>
-              <span className="font-display text-xl tracking-tight text-brand-900">
-                Grow<span className="italic">UP</span>
-              </span>
-            </Link>
-
-            {/* Center links */}
-            <div className="relative hidden items-center md:flex">
-              {links.map((l) => (
-                <NavLink key={l.to} to={l.to} end={l.to === '/'} data-hover>
-                  {({ isActive }) => (
-                    <span className="relative block rounded-full px-4 py-2 text-sm font-semibold text-ink-900">
-                      {isActive && (
-                        <motion.span
-                          layoutId="nav-pill"
-                          className="absolute inset-0 rounded-full bg-brand-800 shadow-sm"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                      <span className={`relative transition-colors ${isActive ? 'text-cream-50' : ''}`}>
-                        {l.label}
-                      </span>
-                    </span>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-
-            {/* CTA */}
-            <Link
-              to="/contact"
-              data-hover
-              className="group relative hidden items-center gap-2 rounded-full bg-brand-800 py-2.5 pl-5 pr-2.5 text-sm font-semibold text-cream-50 transition hover:bg-brand-700 md:flex"
-            >
-              Enquire
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-clay-500 transition-transform group-hover:rotate-45">
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M7 17 17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </Link>
-
-            {/* Mobile toggle */}
-            <button
-              onClick={() => setOpen((v) => !v)}
-              className="relative grid h-10 w-10 place-items-center rounded-full bg-brand-800 text-cream-50 md:hidden"
-              aria-label="Toggle menu"
-            >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-                {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 8h16M4 16h16" />}
-              </svg>
-            </button>
-          </div>
-        </nav>
-      </motion.header>
-
-      {/* Mobile overlay menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-brand-950 md:hidden"
-          >
-            <div className="flex h-full flex-col justify-center px-8">
-              {links.map((l, i) => (
-                <motion.div
-                  key={l.to}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 + i * 0.07 }}
-                >
-                  <NavLink
-                    to={l.to}
-                    end={l.to === '/'}
-                    className="block border-b border-white/10 py-5 font-display text-4xl text-cream-50"
-                  >
-                    {l.label}
-                  </NavLink>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mt-10"
-              >
-                <Link
-                  to="/contact"
-                  className="inline-flex rounded-full bg-clay-500 px-8 py-4 text-base font-semibold text-cream-50"
-                >
-                  Enquire Now
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  )
+  useEffect(() => { document.body.style.overflow = open ? 'hidden' : ''; return () => { document.body.style.overflow = '' } }, [open])
+  return <>
+    <header className="site-header fixed inset-x-0 top-0 z-[90] px-5 py-5 text-cream-50 sm:px-8">
+      <nav className="mx-auto flex max-w-[1600px] items-center justify-between">
+        <Link to="/" className="flex items-baseline gap-2" aria-label="GrowUP home"><span className="font-display text-3xl leading-none tracking-[-.08em]">Grow<span className="italic text-acid">UP</span></span><span className="label hidden text-[.55rem] text-cream-50/70 sm:inline">Estates</span></Link>
+        <button onClick={() => setOpen(true)} className="flex items-center gap-3 rounded-full border border-cream-50/30 bg-ink-900/25 px-4 py-2 text-cream-50 shadow-[0_8px_26px_rgba(0,0,0,.18)] backdrop-blur-md transition duration-300 hover:border-cream-50/60 hover:bg-ink-900/45" aria-expanded={open} aria-controls="site-menu"><span className="label">Menu</span><span className="relative block h-5 w-6"><i className="absolute left-0 top-[7px] block h-px w-full bg-current"/><i className="absolute left-0 top-[13px] block h-px w-full bg-current"/></span></button>
+      </nav>
+    </header>
+    <AnimatePresence>{open && <motion.aside id="site-menu" role="dialog" aria-modal="true" aria-label="Site navigation" initial={{ clipPath: 'circle(0% at calc(100% - 3rem) 3rem)' }} animate={{ clipPath: 'circle(150% at calc(100% - 3rem) 3rem)' }} exit={{ clipPath: 'circle(0% at calc(100% - 3rem) 3rem)' }} transition={{ duration: .72, ease: [0.76,0,.24,1] }} className="fixed inset-0 z-[100] flex bg-acid p-5 pt-24 text-ink-900 sm:p-8 sm:pt-28 lg:left-auto lg:w-[32vw] lg:min-w-[440px]"><button onClick={() => setOpen(false)} className="absolute right-5 top-5 flex items-center gap-3 sm:right-8 sm:top-8" aria-label="Close menu"><span className="label">Close</span><span className="relative block h-6 w-6"><i className="absolute left-0 top-[12px] block h-px w-full rotate-45 bg-current"/><i className="absolute left-0 top-[12px] block h-px w-full -rotate-45 bg-current"/></span></button><div className="flex w-full flex-col"><div className="label flex items-center justify-between border-b border-ink-900/20 pb-5"><span>Navigation</span><span>GrowUP / 2026</span></div><div className="mt-8">{links.map((link, i) => <motion.div key={link.to} initial={{ y: 24, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: .14 + i * .055 }}><NavLink to={link.to} end={link.to === '/'} className={({isActive}) => `flex items-end justify-between border-b border-ink-900/20 py-3 font-display text-5xl leading-none tracking-[-.055em] ${isActive ? 'italic' : ''}`}><span>{link.label}</span><span className="mb-1 label text-xs">{link.number}</span></NavLink></motion.div>)}</div><div className="mt-auto border-t border-ink-900/20 pt-5"><p className="label">Private enquiries</p><a href="tel:+919876543210" className="mt-3 block font-display text-3xl tracking-[-.04em]">+91 98765 43210</a><Link to="/contact" className="mt-8 flex items-center justify-between label">Begin a conversation <span className="text-xl">↗</span></Link></div></div></motion.aside>}</AnimatePresence>
+  </>
 }

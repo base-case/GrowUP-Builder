@@ -1,105 +1,15 @@
 import { company } from '../data/site.js'
 import PageHero from '../components/PageHero.jsx'
 import EnquiryForm from '../components/EnquiryForm.jsx'
-import Icon from '../components/Icon.jsx'
 import { Reveal, AnimatedHeading } from '../components/motion.jsx'
 
+const reasons = ['Explore a GrowUP residence', 'Book a private site visit', 'Discuss an investment', 'Partner on land or a joint venture']
+
 export default function Contact() {
-  return (
-    <>
-      <PageHero
-        title="Contact Us"
-        crumb="Contact"
-        subtitle="We'd love to help you find your next home or investment. Reach out — we respond within 24 hours."
-        image="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2000&q=80"
-      />
-
-      <section className="bg-cream-100 py-24 lg:py-32">
-        <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-5 lg:px-8">
-          {/* Info */}
-          <div className="lg:col-span-2">
-            <Reveal>
-              <p className="label mb-6 flex items-center gap-3 text-clay-600">
-                <span className="h-px w-10 bg-clay-500" /> Get in touch
-              </p>
-            </Reveal>
-            <AnimatedHeading
-              text="Talk to the GrowUP team"
-              className="font-display text-4xl leading-[1.05] text-ink-900 sm:text-5xl"
-            />
-            <Reveal delay={0.2}>
-              <p className="mt-6 text-lg text-ink-700/80">
-                Whether you're booking a site visit, exploring an investment or partnering on a joint venture — we're here to help.
-              </p>
-            </Reveal>
-
-            <div className="mt-10 space-y-4">
-              <Reveal>
-                <a href={`tel:${company.phoneHref}`} data-hover className="flex items-center gap-4 rounded-2xl bg-cream-50 p-5 ring-1 ring-ink-900/5 transition hover:ring-brand-400">
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-brand-800 text-clay-300">
-                    <Icon name="phone" className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="label text-ink-700/50">Call us</p>
-                    <p className="font-semibold text-ink-900">{company.phone}</p>
-                  </div>
-                </a>
-              </Reveal>
-              <Reveal delay={0.08}>
-                <a href={`mailto:${company.email}`} data-hover className="flex items-center gap-4 rounded-2xl bg-cream-50 p-5 ring-1 ring-ink-900/5 transition hover:ring-brand-400">
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-brand-800 text-clay-300">
-                    <Icon name="mail" className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="label text-ink-700/50">Email us</p>
-                    <p className="font-semibold text-ink-900">{company.email}</p>
-                  </div>
-                </a>
-              </Reveal>
-              {company.offices.map((o, i) => (
-                <Reveal key={o.label} delay={0.12 + i * 0.06}>
-                  <div className="flex items-start gap-4 rounded-2xl bg-cream-50 p-5 ring-1 ring-ink-900/5">
-                    <span className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-full bg-brand-800 text-clay-300">
-                      <Icon name="pin" className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <p className="label text-ink-700/50">{o.label}</p>
-                      <p className="font-medium text-ink-700">{o.lines.join(', ')}</p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-
-          {/* Form */}
-          <div className="lg:col-span-3">
-            <Reveal delay={0.1}>
-              <div className="rounded-[2rem] bg-cream-50 p-7 shadow-xl shadow-ink-900/5 ring-1 ring-ink-900/5 sm:p-10">
-                <h3 className="font-display text-3xl text-ink-900">Send us a message</h3>
-                <p className="mt-2 text-ink-700/70">Fill in the form and we'll be in touch shortly.</p>
-                <div className="mt-7">
-                  <EnquiryForm />
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Map */}
-      <section className="bg-cream-100 pb-24">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="overflow-hidden rounded-[2rem] ring-1 ring-ink-900/10">
-            <iframe
-              title="GrowUP corporate office"
-              className="h-96 w-full"
-              loading="lazy"
-              src="https://maps.google.com/maps?q=SG%20Highway%2C%20Ahmedabad%2C%20Gujarat&output=embed"
-            />
-          </div>
-        </div>
-      </section>
-    </>
-  )
+  return <>
+    <PageHero title="Let’s talk." crumb="Contact" subtitle="A considered next step starts with a short conversation." image="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=2200&q=85" />
+    <section className="bg-cream-50 py-24 sm:py-36"><div className="mx-auto grid max-w-[1600px] gap-14 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-4"><p className="label flex items-center gap-3 text-ink-700/65"><span className="h-px w-8 bg-ink-900"/>Private enquiries</p><AnimatedHeading text="We make the first move feel easy." className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em] sm:text-7xl"/><p className="mt-8 max-w-sm leading-relaxed text-ink-700/75">Tell us a little about your plans. A member of the GrowUP team will respond within one working day.</p><div className="mt-12 border-t border-ink-900/20"><a href={`tel:${company.phoneHref}`} className="block border-b border-ink-900/20 py-5" data-hover><p className="label text-ink-700/55">Call</p><p className="mt-2 font-display text-3xl tracking-[-.04em]">{company.phone}</p></a><a href={`mailto:${company.email}`} className="block border-b border-ink-900/20 py-5" data-hover><p className="label text-ink-700/55">Write</p><p className="mt-2 break-all font-display text-2xl tracking-[-.04em] sm:text-3xl">{company.email}</p></a></div></div><Reveal className="lg:col-span-6 lg:col-start-7"><div className="bg-ink-900 p-6 text-cream-50 sm:p-10"><p className="label text-acid">Start here</p><h2 className="mt-5 font-display text-5xl leading-[.84] tracking-[-.055em]">Tell us what you’re looking for.</h2><div className="mt-8"><EnquiryForm dark /></div></div></Reveal></div></section>
+    <section className="bg-cream-100 py-20 sm:py-28"><div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-4"><p className="label flex items-center gap-3 text-ink-700/65"><span className="h-px w-8 bg-ink-900"/>How can we help?</p><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em]">One studio, many <i>ways in.</i></h2></div><div className="grid gap-px bg-ink-900/20 lg:col-span-7 lg:col-start-6 sm:grid-cols-2">{reasons.map((reason, index) => <div key={reason} className="bg-cream-100 p-6 sm:p-8"><p className="label text-clay-600">0{index + 1}</p><p className="mt-10 max-w-xs font-display text-3xl leading-none tracking-[-.04em]">{reason}</p></div>)}</div></div></section>
+    <section className="bg-brand-950 py-20 text-cream-50 sm:py-28"><div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-4"><p className="label text-acid">Find us</p><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em]">Come <i>by.</i></h2></div><div className="lg:col-span-7 lg:col-start-6"><div className="grid gap-8 border-t border-cream-50/20 pt-6 sm:grid-cols-2">{company.offices.map(office => <div key={office.label}><p className="label text-cream-50/50">{office.label}</p><p className="mt-4 text-lg leading-relaxed text-cream-50/80">{office.lines.map(line => <span key={line} className="block">{line}</span>)}</p></div>)}</div><div className="mt-12 h-[300px] overflow-hidden border border-cream-50/15 grayscale"><iframe title="GrowUP corporate office" className="h-full w-full" loading="lazy" src="https://maps.google.com/maps?q=SG%20Highway%2C%20Ahmedabad%2C%20Gujarat&output=embed"/></div></div></div></section>
+  </>
 }

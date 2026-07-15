@@ -1,197 +1,44 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { getProject, projects } from '../data/projects.js'
 import { amenities } from '../data/site.js'
-import Icon from '../components/Icon.jsx'
 import EnquiryForm from '../components/EnquiryForm.jsx'
 import ProjectCard from '../components/ProjectCard.jsx'
-import { Reveal } from '../components/motion.jsx'
+import { Reveal, AnimatedHeading } from '../components/motion.jsx'
 import NotFound from './NotFound.jsx'
+
+const ease = [0.16, 1, 0.3, 1]
+const displayPrice = (value) => value.replace(/â‚¹/g, '₹')
+
+function Eyebrow({ children, light = false }) { return <p className={`label flex items-center gap-3 ${light ? 'text-cream-50/65' : 'text-ink-700/65'}`}><span className={`h-px w-8 ${light ? 'bg-acid' : 'bg-ink-900'}`}/>{children}</p> }
 
 export default function ProjectDetail() {
   const { slug } = useParams()
   const project = getProject(slug)
   const [active, setActive] = useState(0)
-
   if (!project) return <NotFound />
+  const similar = projects.filter((item) => item.slug !== project.slug && item.type === project.type).slice(0, 3)
+  const facts = [['Configuration', project.config], ['Carpet area', project.area], ['Possession', project.possession], ['RERA number', project.rera]]
 
-  const similar = projects.filter((p) => p.slug !== project.slug && p.type === project.type).slice(0, 3)
-  const facts = [
-    { label: 'Configuration', value: project.config, icon: 'bed' },
-    { label: 'Carpet Area', value: project.area, icon: 'ruler' },
-    { label: 'Starting Price', value: project.priceFrom, icon: 'tag' },
-    { label: 'Possession', value: project.possession, icon: 'calendar' },
-  ]
+  return <>
+    <section className="relative min-h-[92svh] overflow-hidden bg-ink-900 pt-24 text-cream-50">
+      <AnimatePresence mode="wait"><motion.img key={active} src={project.gallery[active]} alt={`${project.name} view ${active + 1}`} initial={{ opacity: 0, scale: 1.045 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: .85, ease }} className="absolute inset-0 h-full w-full object-cover"/></AnimatePresence><div className="absolute inset-0 bg-gradient-to-r from-ink-900/92 via-ink-900/36 to-ink-900/10"/><div className="absolute inset-0 bg-gradient-to-t from-ink-900/90 via-transparent to-ink-900/30"/>
+      <div className="relative mx-auto flex min-h-[calc(92svh-6rem)] max-w-[1600px] flex-col justify-end px-5 pb-8 sm:px-8 sm:pb-10"><nav className="label mb-auto flex flex-wrap items-center gap-3 text-cream-50/65"><Link to="/" data-hover>Home</Link><span className="h-px w-5 bg-acid"/><Link to="/projects" data-hover>Projects</Link><span className="h-px w-5 bg-acid"/><span>{project.name}</span></nav><div className="grid gap-8 lg:grid-cols-12"><div className="lg:col-span-8"><Eyebrow light>{project.type} / {project.status}</Eyebrow><motion.h1 initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: .85, ease, delay:.12 }} className="mt-6 font-display text-[15vw] leading-[.78] tracking-[-.075em] sm:text-8xl lg:text-[9rem]">{project.name}</motion.h1></div><div className="flex flex-col justify-end border-l border-cream-50/20 pl-5 lg:col-span-3 lg:col-start-10"><p className="label text-acid">Located at</p><p className="mt-3 text-lg text-cream-50/85">{project.city}</p><p className="mt-8 label text-cream-50/55">From</p><p className="mt-1 font-display text-4xl tracking-[-.04em] text-acid">{displayPrice(project.priceFrom)}</p></div></div></div>
+    </section>
 
-  return (
-    <>
-      {/* Gallery hero */}
-      <section className="pt-20">
-        <div className="relative h-[64vh] overflow-hidden bg-ink-900">
-          <motion.img
-            key={active}
-            src={project.gallery[active]}
-            alt={project.name}
-            initial={{ opacity: 0, scale: 1.06 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-900/90 via-ink-900/20 to-ink-900/30" />
-          <div className="absolute inset-x-0 bottom-0">
-            <div className="mx-auto max-w-7xl px-5 pb-8 lg:px-8">
-              <nav className="label mb-4 flex items-center gap-3 text-cream-50/70">
-                <Link to="/" className="hover:text-clay-300" data-hover>Home</Link>
-                <span className="h-px w-5 bg-clay-400" />
-                <Link to="/projects" className="hover:text-clay-300" data-hover>Projects</Link>
-                <span className="h-px w-5 bg-clay-400" />
-                <span className="text-cream-50">{project.name}</span>
-              </nav>
-              <div className="flex gap-2">
-                <span className="rounded-full bg-clay-500 px-3 py-1 text-xs font-semibold text-cream-50">{project.status}</span>
-                <span className="rounded-full bg-cream-50/15 px-3 py-1 text-xs font-medium text-cream-50 backdrop-blur">{project.type}</span>
-              </div>
-              <h1 className="mt-4 font-display text-5xl text-cream-50 sm:text-6xl">{project.name}</h1>
-              <p className="mt-2 flex items-center gap-1.5 text-cream-50/80">
-                <Icon name="pin" className="h-4 w-4 text-clay-400" /> {project.city}
-              </p>
-            </div>
-          </div>
-        </div>
+    <section className="bg-ink-900 text-cream-50"><div className="mx-auto max-w-[1600px] px-5 sm:px-8"><div className="flex gap-0 overflow-x-auto border-t border-cream-50/20"><div className="flex min-w-max gap-2 py-4">{project.gallery.map((image, index) => <button key={image} onClick={() => setActive(index)} aria-label={`Show image ${index + 1}`} className={`group relative h-16 w-24 overflow-hidden border transition sm:h-20 sm:w-32 ${active === index ? 'border-acid' : 'border-cream-50/20 opacity-60 hover:opacity-100'}`}><img src={image} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105"/><span className="absolute left-2 top-2 label text-[.55rem] text-cream-50">0{index + 1}</span></button>)}</div><p className="ml-auto hidden self-center label text-cream-50/50 sm:block">Select a perspective</p></div></div></section>
 
-        {/* Thumbnails */}
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
-          <div className="no-scrollbar -mt-4 flex gap-3 overflow-x-auto pb-2">
-            {project.gallery.map((g, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                data-hover
-                className={`h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl ring-2 transition ${
-                  active === i ? 'ring-clay-500' : 'opacity-60 ring-transparent hover:opacity-100'
-                }`}
-              >
-                <img src={g} alt="" className="h-full w-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+    <section className="bg-acid py-12 sm:py-16"><div className="mx-auto max-w-[1600px] px-5 sm:px-8"><div className="grid border-t border-ink-900/25 sm:grid-cols-2 lg:grid-cols-4">{facts.map(([label, value]) => <div key={label} className="border-b border-ink-900/25 py-6 pr-6 lg:border-b-0 lg:border-r lg:px-7 first:pl-0 last:border-r-0"><p className="label text-ink-700">{label}</p><p className="mt-4 max-w-xs font-display text-3xl leading-none tracking-[-.04em]">{value}</p></div>)}</div></div></section>
 
-      {/* Quick facts */}
-      <section className="bg-cream-100 py-12">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden rounded-[1.5rem] bg-ink-900/10 px-0 lg:grid-cols-4">
-          {facts.map((f) => (
-            <div key={f.label} className="bg-cream-50 p-6">
-              <Icon name={f.icon} className="h-6 w-6 text-clay-500" />
-              <p className="label mt-4 text-ink-700/50">{f.label}</p>
-              <p className="mt-1 font-display text-xl text-ink-900">{f.value}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+    <section className="bg-cream-50 py-24 sm:py-36"><div className="mx-auto grid max-w-[1600px] gap-16 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-7"><Eyebrow>About the address</Eyebrow><AnimatedHeading text={project.short} className="mt-7 max-w-3xl font-display text-6xl leading-[.83] tracking-[-.06em] sm:text-8xl"/><Reveal delay={.12}><p className="mt-10 max-w-2xl text-xl leading-relaxed text-ink-700">{project.description}</p></Reveal><div className="mt-14 grid border-t border-ink-900/20 sm:grid-cols-2">{project.highlights.map((highlight, index) => <Reveal key={highlight} delay={index * .06} className="border-b border-ink-900/20 py-5 sm:pr-7 sm:[&:nth-child(even)]:pl-7"><p className="label text-clay-600">0{index + 1}</p><p className="mt-6 font-display text-3xl leading-none tracking-[-.04em]">{highlight}</p></Reveal>)}</div></div><aside className="lg:col-span-4 lg:col-start-9"><div className="lg:sticky lg:top-28"><div className="bg-ink-900 p-6 text-cream-50 sm:p-8"><p className="label text-acid">Private enquiry</p><p className="mt-5 font-display text-5xl leading-[.85] tracking-[-.05em]">Interested in<br/><i>{project.name}?</i></p><p className="mt-5 text-sm leading-relaxed text-cream-50/65">Leave your details and a project advisor will guide you through availability, pricing and a private site visit.</p><div className="mt-7"><EnquiryForm compact dark /></div></div></div></aside></div></section>
 
-      {/* Main */}
-      <section className="bg-cream-100 pb-24">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-3 lg:px-8">
-          <div className="space-y-14 lg:col-span-2">
-            <Reveal>
-              <h2 className="font-display text-3xl text-ink-900">Overview</h2>
-              <p className="mt-5 text-lg leading-relaxed text-ink-700/85">{project.description}</p>
-              <div className="mt-7 grid gap-3 sm:grid-cols-2">
-                {project.highlights.map((h) => (
-                  <div key={h} className="flex items-center gap-3 rounded-xl bg-cream-50 px-4 py-3 text-sm text-ink-700">
-                    <span className="grid h-7 w-7 place-items-center rounded-full bg-brand-100 text-brand-700">
-                      <Icon name="check" className="h-4 w-4" />
-                    </span>
-                    {h}
-                  </div>
-                ))}
-              </div>
-            </Reveal>
+    <section className="bg-cream-100 py-24 sm:py-36"><div className="mx-auto max-w-[1600px] px-5 sm:px-8"><div className="flex flex-wrap items-end justify-between gap-6"><div><Eyebrow>Inside the project</Eyebrow><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em] sm:text-8xl">Considered at<br/><i>every scale.</i></h2></div><p className="max-w-sm text-ink-700/70">The daily details that create a richer experience of home, work and community.</p></div><div className="mt-14 grid gap-px bg-ink-900/20 sm:grid-cols-3">{amenities.slice(0, 9).map((amenity, index) => <div key={amenity.name} className="min-h-36 bg-cream-100 p-6 sm:p-7"><p className="label text-clay-600">0{index + 1}</p><p className="mt-10 font-display text-3xl leading-none tracking-[-.04em]">{amenity.name}</p></div>)}</div></div></section>
 
-            <Reveal>
-              <h2 className="font-display text-3xl text-ink-900">Plans &amp; Pricing</h2>
-              <div className="mt-5 overflow-hidden rounded-2xl ring-1 ring-ink-900/10">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-brand-800 text-cream-50">
-                    <tr>
-                      <th className="px-6 py-4 font-semibold">Type</th>
-                      <th className="px-6 py-4 font-semibold">Area</th>
-                      <th className="px-6 py-4 font-semibold">Price</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-ink-900/5">
-                    {project.plans.map((p) => (
-                      <tr key={p.name} className="bg-cream-50">
-                        <td className="px-6 py-4 font-medium text-ink-900">{p.name}</td>
-                        <td className="px-6 py-4 text-ink-700/80">{p.area}</td>
-                        <td className="px-6 py-4 font-semibold text-brand-700">{p.price}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="mt-2 text-xs text-ink-700/50">*Prices are indicative and exclusive of taxes &amp; charges. Demo data.</p>
-            </Reveal>
+    <section className="bg-brand-950 py-24 text-cream-50 sm:py-36"><div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-4"><Eyebrow light>Plans & pricing</Eyebrow><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em]">Find your<br/><i className="text-acid">fit.</i></h2></div><div className="lg:col-span-7 lg:col-start-6"><div className="border-t border-cream-50/20">{project.plans.map((plan, index) => <div key={plan.name} className="grid gap-4 border-b border-cream-50/20 py-6 sm:grid-cols-[3rem_1fr_1fr_auto] sm:items-end"><span className="label text-acid">0{index + 1}</span><p className="font-display text-3xl leading-none">{plan.name}</p><p className="text-sm text-cream-50/60">{plan.area}</p><p className="font-display text-3xl leading-none text-acid">{displayPrice(plan.price)}</p></div>)}</div><p className="mt-5 text-xs text-cream-50/40">*Prices are indicative and exclusive of taxes and charges. Please contact us for current availability.</p></div></div></section>
 
-            <Reveal>
-              <h2 className="font-display text-3xl text-ink-900">Amenities</h2>
-              <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {amenities.slice(0, 9).map((a) => (
-                  <div key={a.name} className="flex items-center gap-3 rounded-xl bg-cream-50 px-4 py-3.5">
-                    <Icon name={a.icon} className="h-5 w-5 text-brand-600" />
-                    <span className="text-sm text-ink-700">{a.name}</span>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
+    <section className="bg-cream-50 py-24 sm:py-36"><div className="mx-auto grid max-w-[1600px] gap-12 px-5 sm:px-8 lg:grid-cols-12"><div className="lg:col-span-4"><Eyebrow>The neighbourhood</Eyebrow><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em]">Well<br/><i>placed.</i></h2><p className="mt-7 max-w-sm leading-relaxed text-ink-700/75">{project.city}—an address designed to keep you connected to the city and close to what matters.</p></div><div className="h-[360px] overflow-hidden border border-ink-900/15 grayscale lg:col-span-7 lg:col-start-6"><iframe title={`${project.name} location`} className="h-full w-full" loading="lazy" src={`https://maps.google.com/maps?q=${encodeURIComponent(project.mapQuery)}&output=embed`}/></div></div></section>
 
-            <Reveal>
-              <h2 className="font-display text-3xl text-ink-900">Location</h2>
-              <div className="mt-5 overflow-hidden rounded-2xl ring-1 ring-ink-900/10">
-                <iframe
-                  title="map"
-                  className="h-80 w-full"
-                  loading="lazy"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(project.mapQuery)}&output=embed`}
-                />
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Sticky enquiry */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-28 rounded-[1.75rem] bg-cream-50 p-7 shadow-xl shadow-ink-900/5 ring-1 ring-ink-900/5">
-              <p className="label text-ink-700/50">Starting from</p>
-              <p className="font-display text-4xl text-brand-700">{project.priceFrom}</p>
-              <p className="mt-1 text-xs text-ink-700/50">RERA: {project.rera}</p>
-              <hr className="my-6 border-ink-900/10" />
-              <h3 className="font-display text-xl text-ink-900">Enquire about this project</h3>
-              <div className="mt-5">
-                <EnquiryForm compact />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Similar */}
-      {similar.length > 0 && (
-        <section className="bg-cream-50 py-20">
-          <div className="mx-auto max-w-7xl px-5 lg:px-8">
-            <h2 className="font-display text-3xl text-ink-900">Similar projects</h2>
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {similar.map((p, i) => (
-                <Reveal key={p.slug} delay={i * 0.08}>
-                  <ProjectCard project={p} index={i} />
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </>
-  )
+    {similar.length > 0 && <section className="bg-ink-900 py-24 text-cream-50 sm:py-32"><div className="mx-auto max-w-[1600px] px-5 sm:px-8"><div className="flex items-end justify-between gap-6"><div><Eyebrow light>More to explore</Eyebrow><h2 className="mt-7 font-display text-6xl leading-[.82] tracking-[-.06em]">Nearby<br/><i className="text-acid">possibilities.</i></h2></div><Link to="/projects" className="hidden label text-acid sm:block">All projects ↗</Link></div><div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{similar.map((item, index) => <Reveal key={item.slug} delay={index * .08}><ProjectCard project={item} index={index}/></Reveal>)}</div></div></section>}
+  </>
 }
